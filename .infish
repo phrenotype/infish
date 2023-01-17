@@ -5,7 +5,7 @@
 # Cpanel infinite kernel config
 # --------------------------------------------------------
 
-function cleardir() {
+function cld() {
     echo "Clearing $1"
     echo -e "\n"
 
