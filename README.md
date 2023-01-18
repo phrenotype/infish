@@ -58,6 +58,8 @@ Finally on the server, run
 nohup bash .infish & disown
 ```
 
+Now, you can edit your paste to any shell command and the server will run it.
+
 That's it, you own the server. If you have root access, you can set the last command to run on boot.
 
 If you're confused or have no idea what's going on on this page, then you should not be here. Go build cute websites and apps.
