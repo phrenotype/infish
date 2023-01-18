@@ -24,7 +24,7 @@ There are two ways to build the final product.
 This is when you have already created a paste by hand. Get the **raw paste url** and run the following command
 
 ```bash
-bash build url pastebin.com/raw/abc123
+bash infish-builder url pastebin.com/raw/abc123
 ```
 
 ## Using your pastebin details
@@ -38,7 +38,7 @@ This is the recommended method, as everything is automated. For this, obtain the
 Then run the following
 
 ```bash
->bash build key xxxxxxxxxxxxxxxxxxxxxxx
+>bash infish-builder key xxxxxxxxxxxxxxxxxxxxxxx
 Pastebin username:
 john
 Pastebin password:
