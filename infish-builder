@@ -38,7 +38,7 @@ function main() {
         eval $command
     fi
 
-    sleep 10
+    sleep 30
 }
 
 while true; do
