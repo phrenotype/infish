@@ -119,7 +119,7 @@ then
     fi
 
     echo -e "\n\n"
-    echo "Generating infinite shell...\n"
+    echo -e "Generating infinite shell...\n"
 
     api_user_key=$(user_key $username $password $dev_key)
     check_api_resp $api_user_key
