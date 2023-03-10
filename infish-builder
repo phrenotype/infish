@@ -49,9 +49,14 @@ done
 
 
 
-usage_text="Usage: bash infish-builder url|key url_or_key [optional_user_agent]\n\n"
-usage_text+="Example: bash infish-builder url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n"
-usage_text+="Example: bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
+usage_text="Usage:\n\tbash infish-builder url|key url_or_key [optional_user_agent]\n\n"
+usage_text+="Example:\n\tbash infish-builder url pastebin.com/raw/ABC123\n\n\t"
+usage_text+="bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\n"
+
+usage_text+="\n\n\t"
+
+usage_text+="bash infish-builder url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n\n\t"
+usage_text+="bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
 
 if [[ "$#" != 2 ]]; then
 
@@ -65,6 +70,11 @@ if [[ "$1" != "url" && "$1" != "key" ]]; then
     exit
 fi
 
+
+legal_disclaimer="[!] Legal Disclaimer: Using this piece of software to generate code for use against targets without prior mutual consent is illegal. I assume no liability and bear no responsibility for any misuse or damage caused by this program."
+legal_disclaimer+="\n\n"
+
+echo -e $legal_disclaimer
 
 user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0"
 
@@ -97,6 +107,10 @@ if [[ "$1" = "url" ]]; then
     content=${content//useragent=/useragent=\"$user_agent\"}
 
     echo "$content" >".infish"
+
+    echo -e "\n"
+
+    echo -e "Successfully built infinite shell\n\n"    
 
     exit
 
