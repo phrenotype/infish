@@ -15,13 +15,13 @@ Anytime you need to run a command, simply edit the paste to the command you want
 
 There are two ways to build the final product.
 
-- Using a raw paste url
+- Using a raw paste url (or a website you control. Observe opsec though.)
 - Using your pastebin dev api key, username, and password
 
 
 ## Using a raw url
 
-This is when you already have a webpage or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
+This is when you already have a webpage (observe opsec) or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
 
 ```bash
 bash infish-builder url pastebin.com/raw/abc123
