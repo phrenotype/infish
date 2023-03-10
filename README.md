@@ -4,7 +4,7 @@ Infish stands for infinite shell. It's a way to maintain persistent shell access
 
 Note that this project is for **educational purposes** only. I bear no responsibility for how you use it. For this reason, no specific tutorial will be given for how exactly when or where to use this tool.
 
-The aim of this shell is the give the penetration tester maximum and complete control over the system such that **only a reboot** can save the day. Infact if one has root access, one can set the script to run on boot, that way, the target is **screwed**.
+The aim of this shell is the give the penetration tester maximum and complete control over the system such that **even reboot** can not save the day. Infact if one has root access, one can set the script to run on boot, that way, the target is **screwed**.
 
 # How it works
 Here, you will have a shell that keeps checking on a paste on a predefined url or pastebin (use a throw away account and make the paste unlisted), and running whatever command it finds there. That way, you don't need access to the target machine. You've created a poor man's reverse shell, while remaining anonymous in the process.
