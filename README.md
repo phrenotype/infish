@@ -153,3 +153,8 @@ This is more devastating and very difficult to uncover. It involves adding the g
 
 # Finally
 That's it, you own the server. At least for now...
+
+# Contact
+Email: dev@paulrobert.xyz
+
+Twitter: ![Twitter followers](https://img.shields.io/twitter/follow/phrenotyper?style=social)
